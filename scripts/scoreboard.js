@@ -1,5 +1,5 @@
 /***** Declare variables/objects *****/
-function Score(person,score){
+function Score(person, score) {
     this.person = person;
     this.score = score;
 }
@@ -14,6 +14,10 @@ clearScoreElement.addEventListener("click", clearScores);
 /***** Helper functions *****/
 // This function will populate the DOM with the scores
 function populateScoreboard(scores) {
+    if (scores === null) {
+        return;
+    }
+
     sortScores(scores);
     // clear then populate scores
     scoresElement.innerHTML = "";
@@ -25,7 +29,7 @@ function populateScoreboard(scores) {
         // Inner divs for score
         let positionEl = document.createElement("div");
         positionEl.className = "ml-auto mr-2 text-right text-secondary position";
-        positionEl.textContent = i+1;
+        positionEl.textContent = i + 1;
         let personEl = document.createElement("div");
         personEl.className = "mx-auto mr-2 text-center text-secondary person";
         personEl.textContent = scores[i].person;
@@ -41,24 +45,22 @@ function populateScoreboard(scores) {
     }
 };
 // This function will add the score to the scoreboard
-function clearScores(){
+function clearScores() {
     localStorage.removeItem("scoreboard");
 
     // Update DOM
     scoresElement.innerHTML = "";
 };
 // These function will take an score array and sort it by score
-function sortScores(scores){
-    if(scores !== null){
-        scores.sort(compareScore);
-    }
+function sortScores(scores) {
+    scores.sort(compareScore);
 }
-function compareScore(a,b){
-    if(parseInt(a.score) > parseInt(b.score)){
+function compareScore(a, b) {
+    if (parseInt(a.score) > parseInt(b.score)) {
         return -1;
-    }else if (parseInt(a.score) < parseInt(b.score)){
+    } else if (parseInt(a.score) < parseInt(b.score)) {
         return 1;
-    }else{
+    } else {
         return 0;
     }
 }

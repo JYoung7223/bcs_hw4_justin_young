@@ -7,7 +7,6 @@ function Question(ask,options,answerIndex){
 };
 var quiz = []; // This array will hold the list of questions.
 var currentQuestion = Question("",[],0); // holds the current question being asked
-var correctWrong = ""; // This will hold if the last questions answered was right or wrong
 var timerInterval;
 var secondsRemaining = 75;
 var runningScore = 0;
@@ -91,8 +90,7 @@ function askQuestion(question) {
         optionsElement.appendChild(rowEl);
     }
 
-    // Populate right/wrong row
-    correctWrongElement.textContent = correctWrong;
+    // Populate right/wrong row will be done when question is answered
 
     // Populate running score
     runningScoreElement.textContent = "Score:" + runningScore;
@@ -100,13 +98,27 @@ function askQuestion(question) {
 
 // This function will be called when an option is clicked.
 function answeredQuestion(event) {
+    // Clear any Alerts then add to DOM
+    let alertEl = document.createElement("div");
+    alertEl.setAttribute("role","alert");
+    alertEl.id = "alert-at-"+secondsRemaining;
+
     if(parseInt(event.target.getAttribute("data-option")) === currentQuestion.answerIndex){
-        correctWrong = "Correct!";
+        // Add Alert to DOM
+        alertEl.className = "mx-auto alert alert-success";
+        alertEl.textContent = "Correct!";
         runningScore+= 1;
     }else{
-        correctWrong = "Wrong!";
+        alertEl.className = "mx-auto alert alert-danger";
+        alertEl.textContent = "Wrong!";
         secondsRemaining-= 10;
     }
+    correctWrongElement.appendChild(alertEl);
+
+    // Close alert after 3 seconds
+    setTimeout(function() {
+        $("#"+alertEl.id).alert("close");
+    },3000);
     pickQuestion();
 };
 // This function will start the timer
