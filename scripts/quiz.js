@@ -60,12 +60,11 @@ function initQuiz(){
 function pickQuestion(){
     if (quiz.length > 0){
         var qPicked = Math.floor(Math.random() * quiz.length);
-        console.log("Question Picked:"+qPicked);
         currentQuestion = quiz.splice(qPicked, 1)[0]; // remove 1 item at index qPicked (ie. question Asked) and stores it
-        console.log(currentQuestion);
         askQuestion(currentQuestion);
     }else{
         alert("No more questions");
+        endQuiz();
     }
 };
 
@@ -103,7 +102,7 @@ function askQuestion(question) {
 function answeredQuestion(event) {
     if(parseInt(event.target.getAttribute("data-option")) === currentQuestion.answerIndex){
         correctWrong = "Correct!";
-        runningScore+= 10;
+        runningScore+= 1;
     }else{
         correctWrong = "Wrong!";
         secondsRemaining-= 10;
@@ -114,9 +113,7 @@ function answeredQuestion(event) {
 function reduceTimer(){
     secondsRemaining--;
     if(secondsRemaining <= 0){
-        clearInterval(timerInterval);
-        localStorage.setItem("score",runningScoreElement);
-        window.location.replace = "./quiz-score.html"
+        endQuiz();
     }
     timerElement.textContent = "Time:"+secondsRemaining + " sec";
 }
@@ -127,6 +124,17 @@ function startQuiz(){
     pickQuestion();
     // Start timer
     timerInterval = setInterval(reduceTimer,1000);
+}
+// This function will handle the ending of the quiz
+function endQuiz(){
+    console.log("ending quiz");
+    clearInterval(timerInterval);
+    // Give more points for doing it faster.
+    if(secondsRemaining > 0){
+        runningScore+= secondsRemaining;
+    }
+    localStorage.setItem("score",runningScore);
+    window.location.replace("./score.html");
 }
 
 // Run quiz
